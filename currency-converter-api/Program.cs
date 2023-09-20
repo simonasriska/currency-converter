@@ -1,9 +1,19 @@
+using System;
+using Microsoft.AspNetCore.Builder;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// Register HttpClient for dependency injection
+builder.Services.AddHttpClient<CurrencyService>(client =>
+{
+    client.BaseAddress = new Uri("https://www.ecb.europa.eu/");
+    client.DefaultRequestHeaders.Add("Accept", "application/xml");
+});
+
+// Swagger configurations
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -17,9 +27,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
